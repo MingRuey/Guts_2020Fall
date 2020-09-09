@@ -12,3 +12,4 @@ contributed by < `MingRuey` >
 :::
 
 :warning: [作業區](https://hackmd.io/@sysprog/2020-homework1) 登記時用 GitHub 帳號
+> 已經用 GitHub 帳號重新 pull 檔案，並更新連結
