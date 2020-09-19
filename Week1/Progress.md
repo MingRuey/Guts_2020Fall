@@ -6,6 +6,8 @@
     - ...
 
 ## [HW - 2018Q1](https://hackmd.io/@sysprog/linked-list-quiz)
+    - Mostly done. Check 2018q1.md.
+
 ## [HW - 2020Q1](https://hackmd.io/@sysprog/linux2020-quiz1)
 
 ### Class Q&A - https://hackmd.io/@sysprog/r1McTjN4P
