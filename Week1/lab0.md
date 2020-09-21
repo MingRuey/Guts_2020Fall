@@ -26,6 +26,7 @@ contributed by < `MingRuey` >
 
 * memcpy 取代 strcpy ，因為
     > 依據 [CERN Common vulnerabilities guide for C programmers](https://security.web.cern.ch/recommendations/en/codetools/c.shtml) 建議而移除 gets / sprintf / strcpy 等不安全的函式;
+    > Update: 我想到 q_remove_head 裡面應該也要考慮輸入參數 char *sp ，的長度，避免 buffer overflow 。
 
 除了上述關於創造新節點的細節之外，此 ```q_insert_tail``` 函式要求的時間複雜度是 O(1) ，我選擇在 queue_t 的定義裡面加上一個紀錄尾巴所在位置的指標。
 
@@ -205,6 +206,7 @@ Segmentation fault occurred.  You dereferenced a NULL or invalid pointer
 ```
 
 ## TODO:
+- Handle memcpy in q_remove_head
 - Debug Sort
 - Valgrind 排除 qtest 實作的記憶體錯誤
 - Massif 視覺化
