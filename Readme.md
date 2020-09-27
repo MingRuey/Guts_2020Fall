@@ -9,15 +9,18 @@
 
 ### Reading List:
  - [Pending] [GCD](https://hackmd.io/@sysprog/gcd-impl)
+ - [Pending] [Encoding](https://hackmd.io/@sysprog/binary-representation)
  - [Pending] [C Standard && Security](https://hackmd.io/@sysprog/c-std-security?type=view)
  - [Pending] [Constant time ReLU](https://hackmd.io/@sysprog/constant-time-relu)
+ - [Pending] [bit-field](https://hackmd.io/@sysprog/c-bitfield?type=view)
  - [Pending] [Software Defects](https://hackmd.io/@sysprog/software-failure)
  - [Pending] [Processor](https://beta.hackfoldr.org/cpu/)
  - [Pending] [Arm](https://beta.hackfoldr.org/arm/)
  - [Pending] [OSCAR](https://beta.hackfoldr.org/oscar/)
  - [On-Going] [C Language](https://hackmd.io/@sysprog/c-prog/%2F%40sysprog%2Fc-programming)
-    - [Done] lineked list(https://hackmd.io/@sysprog/c-prog/%2Fs%2FSkE33UTHf)
-    - [Done] pointer(https://hackmd.io/@sysprog/c-prog/%2Fs%2FHyBPr9WGl)
+    - [Done] [Why C](https://hackmd.io/@sysprog/c-prog/%2Fs%2FHJFyt37Mx)
+    - [Done] [lineked list](https://hackmd.io/@sysprog/c-prog/%2Fs%2FSkE33UTHf)
+    - [Done] [pointer](https://hackmd.io/@sysprog/c-prog/%2Fs%2FHyBPr9WGl)
  - [Done] [Concept of Developing System Software](https://hackmd.io/@sysprog/concepts?type=view)
 
 ### [EvenMore](https://hackmd.io/@sysprog/linux-kernel-internal)
