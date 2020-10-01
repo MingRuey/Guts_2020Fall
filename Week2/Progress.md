@@ -1,4 +1,4 @@
-# [I03 Quiz2 (9/27)](https://hackmd.io/@sysprog/B1zAbkAEP) && [HW - 2020Q3](https://hackmd.io/@sysprog/2020-quiz3)
+# [I03 Quiz2 (9/27)](https://hackmd.io/@sysprog/B1zAbkAEP) && [HW - 2020Q3](https://hackmd.io/@sysprog/2020-quiz2)
     - ...
 
 ### Reading List:
