@@ -4,6 +4,7 @@
 
 ##  [HomeWork1](https://hackmd.io/@sysprog/2020-homework1)
 ##  [HomeWork2](https://hackmd.io/@sysprog/2020-homework2)
+##  [HomeWork3](https://hackmd.io/@sysprog/2020-homework3)
 
 ### [CSAPP](https://hackmd.io/@sysprog/CSAPP)
 
