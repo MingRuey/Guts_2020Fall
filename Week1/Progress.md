@@ -18,6 +18,6 @@
 
 ### Reading List:
  - [Pending] [Software Defects](https://hackmd.io/@sysprog/software-failure)
- - [Pending] [Encoding](https://hackmd.io/@sysprog/binary-representation)
+ - [Done] [Encoding](https://hackmd.io/@sysprog/binary-representation)
  - [Done] [Linked List](https://hackmd.io/@sysprog/c-prog/%2Fs%2FSkE33UTHf)
 
