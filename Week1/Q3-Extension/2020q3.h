@@ -61,23 +61,21 @@ void reverse(node_t **head)
 }
 
 /*
- * Reverse linked-list 'head',
- * attach the reversed end to tail,
- * and return the new head.
+ * Reverse linked-list 'head', attach the reversed end to tail.
  */
-node_t *rev_recursive(node_t *tail, node_t **head)
+void rev_recursive(node_t **head, node_t *tail)
 {
     node_t *next = (*head)->next;
-    (*head)->next = tail;
-    if (!next) {
-        return *head;
-    }
-    return rev_recursive(*head, &next);
+    node_t *current = *head;
+    current->next = tail;
+    if (!next) { return; }
+    *head = next;
+    rev_recursive(head, current);
 }
 
 void reverse_recur(node_t **head)
 {
-    *head = rev_recursive(NULL, head);
+    rev_recursive(head, NULL);
 }
 
 void print_list(node_t *head)
