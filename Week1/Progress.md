@@ -20,4 +20,3 @@
  - [Pending] [Software Defects](https://hackmd.io/@sysprog/software-failure)
  - [Done] [Encoding](https://hackmd.io/@sysprog/binary-representation)
  - [Done] [Linked List](https://hackmd.io/@sysprog/c-prog/%2Fs%2FSkE33UTHf)
-
