@@ -73,6 +73,31 @@ void test_reverse_multiple_items()
     _print_list_helper("after reverse: ", head);
 }
 
+void test_recurrev_single_item()
+{
+    node_t *head = NULL;
+    add_entry(&head, 1);
+
+    printf("%s\n", __func__);
+    _print_list_helper("before reverse: ", head);
+    reverse_recur(&head);
+    _print_list_helper("after reverse: ", head);
+}
+
+void test_recurrev_multiple_items()
+{
+    node_t *head = NULL;
+    add_entry(&head, 1);
+    add_entry(&head, 2);
+    add_entry(&head, 3);
+    add_entry(&head, 4);
+
+    printf("%s\n", __func__);
+    _print_list_helper("before reverse: ", head);
+    reverse_recur(&head);
+    _print_list_helper("after reverse: ", head);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -82,4 +107,6 @@ int main(int argc, char const *argv[])
     test_swap_multiple_items();
     test_reverse_single_item();
     test_reverse_multiple_items();
+    test_recurrev_single_item();
+    test_recurrev_multiple_items();
 }
