@@ -36,29 +36,28 @@ void remove_entry(node_t **head, node_t *entry)
     free(entry);
 }
 
-node_t *swap_pair(node_t *head)
+void swap_pair(node_t **head)
 {
-    for (node_t **node = &head;
-         *node && (*node)->next;
-         node = &(*node)->next->next) {
-        node_t *tmp = *node;
-        *node = (*node)->next;
-        tmp->next = (*node)->next;
-        (*node)->next = tmp;
+    for (node_t **current = head;
+         *current && (*current)->next;
+         current = &(*current)->next->next) {
+        node_t *tmp = *current;
+        *current = (*current)->next;
+        tmp->next = (*current)->next;
+        (*current)->next = tmp;
     }
-    return head;
 }
 
-node_t *reverse(node_t *head)
+void reverse(node_t **head)
 {
-    node_t *cursor = NULL;
-    while (head) {
-        node_t *next = head->next;
-        head->next = cursor;
-        cursor = head;
-        head = next;
+    node_t *prev = NULL;
+    while (*head) {
+        node_t *next = (*head)->next;
+        (*head)->next = prev;
+        prev = *head;
+        *head = next;
     }
-    return cursor;
+    *head = prev;
 }
 
 void print_list(node_t *head)

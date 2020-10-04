@@ -29,10 +29,10 @@ int main(int argc, char const *argv[])
     /* swap pair.
      * See https://leetcode.com/problems/swap-nodes-in-pairs/
      */
-    head = swap_pair(head);
+    swap_pair(&head);
     print_list(head);
 
-    head = reverse(head);
+    reverse(&head);
     print_list(head);
 
     return 0;

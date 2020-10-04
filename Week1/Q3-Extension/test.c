@@ -18,8 +18,8 @@ void test_swap_single_item()
 
     printf("%s\n", __func__);
     _print_list_helper("before swap: ", head);
-    node_t *new_head = swap_pair(head);
-    _print_list_helper("after swap: ", new_head);
+    swap_pair(&head);
+    _print_list_helper("after swap: ", head);
 }
 
 void test_swap_two_items()
@@ -30,8 +30,8 @@ void test_swap_two_items()
 
     printf("%s\n", __func__);
     _print_list_helper("before swap: ", head);
-    node_t *new_head = swap_pair(head);
-    _print_list_helper("after swap: ", new_head);
+    swap_pair(&head);
+    _print_list_helper("after swap: ", head);
 }
 
 void test_swap_multiple_items()
@@ -44,9 +44,35 @@ void test_swap_multiple_items()
 
     printf("%s\n", __func__);
     _print_list_helper("before swap: ", head);
-    node_t *new_head = swap_pair(head);
-    _print_list_helper("after swap: ", new_head);
+    swap_pair(&head);
+    _print_list_helper("after swap: ", head);
 }
+
+void test_reverse_single_item()
+{
+    node_t *head = NULL;
+    add_entry(&head, 1);
+
+    printf("%s\n", __func__);
+    _print_list_helper("before reverse: ", head);
+    reverse(&head);
+    _print_list_helper("after reverse: ", head);
+}
+
+void test_reverse_multiple_items()
+{
+    node_t *head = NULL;
+    add_entry(&head, 1);
+    add_entry(&head, 2);
+    add_entry(&head, 3);
+    add_entry(&head, 4);
+
+    printf("%s\n", __func__);
+    _print_list_helper("before reverse: ", head);
+    reverse(&head);
+    _print_list_helper("after reverse: ", head);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -54,4 +80,6 @@ int main(int argc, char const *argv[])
     test_swap_single_item();
     test_swap_two_items();
     test_swap_multiple_items();
+    test_reverse_single_item();
+    test_reverse_multiple_items();
 }
