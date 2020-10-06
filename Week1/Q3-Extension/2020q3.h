@@ -1,3 +1,6 @@
+#ifndef _2020Q3_
+#define _2020Q3_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -84,3 +87,5 @@ void print_list(node_t *head)
         printf("%d ", current->value);
     printf("\n");
 }
+
+#endif
