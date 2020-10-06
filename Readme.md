@@ -7,10 +7,10 @@
 ### [CSAPP](https://hackmd.io/@sysprog/CSAPP)
 
 ### Reading List:
- - [Pending] [Software Defects](https://hackmd.io/@sysprog/software-failure)
  - [Pending] [Processor](https://beta.hackfoldr.org/cpu/)
  - [Pending] [Arm](https://beta.hackfoldr.org/arm/)
  - [Pending] [OSCAR](https://beta.hackfoldr.org/oscar/)
+ - [Done] [Software Defects](https://hackmd.io/@sysprog/software-failure)
  - [On-Going] [C Language](https://hackmd.io/@sysprog/c-prog/%2F%40sysprog%2Fc-programming)
     - [Done] lineked list(https://hackmd.io/@sysprog/c-prog/%2Fs%2FSkE33UTHf)
     - [Done] pointer(https://hackmd.io/@sysprog/c-prog/%2Fs%2FHyBPr9WGl)

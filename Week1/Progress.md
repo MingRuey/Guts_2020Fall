@@ -17,6 +17,6 @@
 ### Class Q&A - https://hackmd.io/@sysprog/r1McTjN4P
 
 ### Reading List:
- - [Pending] [Software Defects](https://hackmd.io/@sysprog/software-failure)
+ - [Done] [Software Defects](https://hackmd.io/@sysprog/software-failure)
  - [Done] [Encoding](https://hackmd.io/@sysprog/binary-representation)
  - [Done] [Linked List](https://hackmd.io/@sysprog/c-prog/%2Fs%2FSkE33UTHf)
