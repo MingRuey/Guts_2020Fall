@@ -17,7 +17,7 @@ contributed by < `MingRuey` >
 ## 實作流程
 ---
 
-#### **q_insert_head**, **q_insert_tail**
+### **q_insert_head**, **q_insert_tail**
 
 創造新的 ```lst_ele_t``` 幾個注意的地方:
 
@@ -303,7 +303,6 @@ segmnetation fault 會消失，但是取而代之有 memory leak! 我在程式�
 
 
 ### TODO:
----
 - Valgrind 排除 qtest 實作的記憶體錯誤
 - Massif 視覺化
 - 研讀 Dudect
