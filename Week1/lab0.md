@@ -131,6 +131,9 @@ Segmentation fault occurred.  You dereferenced a NULL or invalid pointer
 
 接著開始撰寫 q_sort ，這裡採用的演算法是 MergeSort，策略主要是用一個　pointer to pointer (head) 直接更新 recursive function 的輸入，並且利用 ```q->size``` 我們可以簡單地找到 queue 的中點來進行分割。
 
+<details>
+<summary> 第一版 q_sort </summary>
+
 ```cpp
 static void recur_sort(list_ele_t **target, int length)
 {
@@ -204,10 +207,96 @@ static void recur_sort(list_ele_t **target, int length)
 Segmentation fault occurred.  You dereferenced a NULL or invalid pointer
 ...
 ```
+</details>
 
-## TODO:
-- Handle memcpy in q_remove_head
-- Debug Sort
+Debug 第一版在 trace 16 的 segmentation fault 的途中，即便 valgrind 已經幫我找出哪行發生 derefernce null pointer ，但邏輯實在有點太亂了腦袋無法處理，因此改了第二版，將 Merge Sort 合併的部分的邏輯寫清楚而且令提取成一個函式。
+
+<details>
+<summary> 第二版程式 </summary>
+```c
+/*
+ * Merge two list and return the new head.
+ */
+static list_ele_t *merge(list_ele_t *head1, list_ele_t *head2)
+{
+    list_ele_t *merged = NULL;
+    list_ele_t *cursor = NULL;
+    while (head1 && head2) {
+        list_ele_t **head =
+            strcmp(head1->value, head2->value) <= 0 ? &head1 : &head2;
+        if (!cursor) {
+            merged = *head;
+            cursor = *head;
+        } else {
+            cursor->next = *head;
+            cursor = cursor->next;
+        }
+        *head = (*head)->next;
+    }
+
+    if (head1) {
+        cursor->next = head1;
+    } else if (head2) {
+        cursor->next = head2;
+    }
+    return merged;
+}
+
+/*
+ * Sort the linked list with known length.
+ */
+static void recur_sort(list_ele_t **target, int length)
+{
+    if (length <= 1) {
+        return;
+    }
+
+    list_ele_t *lhead = *target, *rhead = *target;
+    int halflen = length / 2;
+    for (int i = halflen; i > 1; i--) {
+        rhead = rhead->next;
+    }
+    list_ele_t *tmp = rhead;
+    rhead = rhead->next;
+    tmp->next = NULL;
+
+    recur_sort(&lhead, halflen);
+    recur_sort(&rhead, length - halflen);
+    *target = merge(lhead, rhead);
+}
+
+/*
+ * Sort elements of queue in ascending order
+ * No effect if q is NULL or empty. In addition, if q has only one
+ * element, do nothing.
+ */
+void q_sort(queue_t *q)
+{
+    if (!q || !q->size || q->size == 1) {
+        return;
+    }
+
+    recur_sort(&q->head, q->size);
+    list_ele_t *ele = q->head;
+    for (int l = q->size; l > 0; l--) {
+        ele = ele->next;
+    }
+    q->tail = ele;
+}
+```
+</details>
+
+接著繼續檢查 trace 16 的 segmentation fault ，在一陣兵荒馬亂之後，我發現我的 q->sort，trace 16 的內容是 sort, reverse 再 sort ，我觀察到我的函示在第一次 sort 之後直接 free ，也就是把 trace-16 改成下面這樣， segmnetation fault 會消失，但是取而代之有 memory leak! 我在程式內埋點之後注意到，我的 q->tail 在 sort 完之後會變成 NULL ，隨即發現在 q_sort 的結尾重新 assign tail 的部分搞錯了， for loop 的中止條件應該從 ```for (int l = q->size; l > 0; l--)``` 變成 ```for (int l = q->size; l > 1; l--)```，修正完之後此 bug 就消失，也在測試項目拿到 100/100 。
+
+```
+new
+ih RAND 10000
+sort
+free
+```
+
+### TODO:
+---
 - Valgrind 排除 qtest 實作的記憶體錯誤
 - Massif 視覺化
 - 研讀 Dudect
