@@ -188,6 +188,7 @@ static void recur_sort(list_ele_t **target, int length)
     }
 }
 ```
+</details>
 
 以上是我完成的第一版，結果測試得到 94/100 ，再次使用 Valgrind 進行記憶體除錯，訊息如下 (queue.c #262 是 ```right_head = &(*right_head)->next;```)，讓我得知我在取中點的時候有 derefernce NULL pointer。
 
@@ -207,13 +208,13 @@ static void recur_sort(list_ele_t **target, int length)
 Segmentation fault occurred.  You dereferenced a NULL or invalid pointer
 ...
 ```
-</details>
-
-Debug 第一版在 trace 16 的 segmentation fault 的途中，即便 valgrind 已經幫我找出哪行發生 derefernce null pointer ，但邏輯實在有點太亂了腦袋無法處理，因此改了第二版，將 Merge Sort 合併的部分的邏輯寫清楚而且令提取成一個函式。
+  
+Debug 第一版在 trace 16 的 segmentation fault 的途中，即便 valgrind 已經幫我找出哪行發生 derefernce null pointer ，但邏輯實在有點太亂了腦袋無法處理，因此改了第二版，將 Merge Sort 合併的部分的邏輯寫清楚而且令提取成一個函式:
 
 <details>
 <summary> 第二版程式 </summary>
-```c
+
+```
 /*
  * Merge two list and return the new head.
  */
@@ -284,9 +285,10 @@ void q_sort(queue_t *q)
     q->tail = ele;
 }
 ```
+
 </details>
 
-接著繼續檢查 trace 16 的 segmentation fault ，在一陣兵荒馬亂之後，我發現我的 q->sort，trace 16 的內容是 sort, reverse 再 sort ，我觀察到我的函示在第一次 sort 之後直接 free ，也就是把 trace-16 改成下面這樣， segmnetation fault 會消失，但是取而代之有 memory leak! 我在程式內埋點之後注意到，我的 q->tail 在 sort 完之後會變成 NULL ，隨即發現在 q_sort 的結尾重新 assign tail 的部分搞錯了， for loop 的中止條件應該從 ```for (int l = q->size; l > 0; l--)``` 變成 ```for (int l = q->size; l > 1; l--)```，修正完之後此 bug 就消失，也在測試項目拿到 100/100 。
+接著繼續檢查 trace 16 的 segmentation fault ，在一陣兵荒馬亂之後，我發現我的 q->sort，trace 16 的內容是 sort, reverse 再 sort ，我觀察到我的函示在第一次 sort 之後直接 free ，也就是把 trace-16 改成下面這樣: 
 
 ```
 new
@@ -294,6 +296,10 @@ ih RAND 10000
 sort
 free
 ```
+
+segmnetation fault 會消失，但是取而代之有 memory leak! 我在程式內埋點之後注意到，我的 q->tail 在 sort 完之後會變成 NULL ，隨即發現在 q_sort 的結尾重新 assign tail 的部分搞錯了， for loop 的中止條件應該從 ```for (int l = q->size; l > 0; l--)``` 變成 ```for (int l = q->size; l > 1; l--)```，修正完之後此 bug 就消失，也在測試項目拿到 100/100 。
+
+
 
 ### TODO:
 ---
