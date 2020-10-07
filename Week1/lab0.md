@@ -14,10 +14,10 @@ contributed by < `MingRuey` >
 > 已經用 GitHub 帳號重新 pull 檔案，並更新連結
 :::
 
-實作流程
+## 實作流程
 ---
 
-**q_insert_head**, **q_insert_tail**
+#### **q_insert_head**, **q_insert_tail**
 
 創造新的 ```lst_ele_t``` 幾個注意的地方:
 
@@ -32,11 +32,11 @@ contributed by < `MingRuey` >
 
 接著在 ```q_insert_head``` 在更新頭的指標之後，也要考慮 empty queue 的情況，尾巴的只要也要一併更新，反過來 ```q_insert_tail``` 的時候也要考慮 empty 的情況去對應更新頭。
 
-**q_remove_head**
+### **q_remove_head**
 
 先取出頭的指標，令其為 target，接著更新 queue ，記得要處理 queue 只有一個 element 的情況。接著若 sp 不為 NULL ，要複製 ```target->value``` 到 sp 上，此時一樣要注意 strlen 的行為不包含 trailing null byte 。
 
-**q_reverse**
+### **q_reverse**
 我採用三指標的方式將 linked list 反向，首先排除小於兩個元素的 queue，接著用兩個指標指向 ```q->head``` 跟 ```q->head->next```，並且再用一個指標指向 ```q->head->next->next```，因為反向連節點的過程中要保留下一個節點的位置:
 ```graphviz
 digraph reverse{
@@ -128,6 +128,7 @@ Segmentation fault occurred.  You dereferenced a NULL or invalid pointer
 做一個小修改之後就搞定了。
 
 ---
+### **q_sort**
 
 接著開始撰寫 q_sort ，這裡採用的演算法是 MergeSort，策略主要是用一個　pointer to pointer (head) 直接更新 recursive function 的輸入，並且利用 ```q->size``` 我們可以簡單地找到 queue 的中點來進行分割。
 
