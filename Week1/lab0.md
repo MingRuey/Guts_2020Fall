@@ -209,7 +209,7 @@ static void recur_sort(list_ele_t **target, int length)
 Segmentation fault occurred.  You dereferenced a NULL or invalid pointer
 ...
 ```
-  
+
 Debug 第一版在 trace 16 的 segmentation fault 的途中，即便 valgrind 已經幫我找出哪行發生 derefernce null pointer ，但邏輯實在有點太亂了腦袋無法處理，因此改了第二版，將 Merge Sort 合併的部分的邏輯寫清楚而且令提取成一個函式:
 
 <details>
@@ -289,7 +289,7 @@ void q_sort(queue_t *q)
 
 </details>
 
-接著繼續檢查 trace 16 的 segmentation fault ，在一陣兵荒馬亂之後，我發現我的 q->sort，trace 16 的內容是 sort, reverse 再 sort ，我觀察到我的函示在第一次 sort 之後直接 free ，也就是把 trace-16 改成下面這樣: 
+接著繼續檢查 trace 16 的 segmentation fault ，在一陣兵荒馬亂之後，我發現我的 q->sort，trace 16 的內容是 sort, reverse 再 sort ，我觀察到我的函示在第一次 sort 之後直接 free ，也就是把 trace-16 改成下面這樣:
 
 ```
 new
@@ -301,8 +301,114 @@ free
 segmnetation fault 會消失，但是取而代之有 memory leak! 我在程式內埋點之後注意到，我的 q->tail 在 sort 完之後會變成 NULL ，隨即發現在 q_sort 的結尾重新 assign tail 的部分搞錯了， for loop 的中止條件應該從 ```for (int l = q->size; l > 0; l--)``` 變成 ```for (int l = q->size; l > 1; l--)```，修正完之後此 bug 就消失，也在測試項目拿到 100/100 。
 
 
+## Valgrind 排除 qtest 實作的記憶體錯誤
+---
+
+```
+make clean && make SANITIZER=1 && make test
+```
+可以讓我們發現程式碼執行 trace 17 時的記憶體問題，發生 [Global buffer overflow](https://blog.gypsyengineer.com/en/security/global-buffer-overflows.html):
+```
+==6054==ERROR: AddressSanitizer: global-buffer-overflow on address 0x560c01e2b9c0 at pc 0x560c01c1c86e bp 0x7ffcec1201c0 sp 0x7ffcec1201b0
+READ of size 4 at 0x560c01e2b9c0 thread T0
+    #0 0x560c01c1c86d in do_option_cmd /home/mrchou/code/Guts_2020Fall/lab0-c/console.c:368
+    #1 0x560c01c1b48a in interpret_cmda /home/mrchou/code/Guts_2020Fall/lab0-c/console.c:220
+    #2 0x560c01c1be8e in interpret_cmd /home/mrchou/code/Guts_2020Fall/lab0-c/console.c:243
+    #3 0x560c01c1cb77 in cmd_select /home/mrchou/code/Guts_2020Fall/lab0-c/console.c:569
+    #4 0x560c01c1cf94 in run_console /home/mrchou/code/Guts_2020Fall/lab0-c/console.c:628
+    #5 0x560c01c1a0ad in main /home/mrchou/code/Guts_2020Fall/lab0-c/qtest.c:772
+    #6 0x7fe9232f8b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
+    #7 0x560c01c17809 in _start (/home/mrchou/code/Guts_2020Fall/lab0-c/qtest+0x6809)
+...
+```
+
+### 閱讀程式碼
+
+先檢視程式執行流程，從 Makefile 開始:
+   1. (Makefile) make test -> 執行 driver.py
+   2. (driver.py) 執行 driver.py -> Tracer.run() -> for loop 用 qtest 執行每一個 trace (qtest -f trace-xx-ops.cmd)
+   3. (qtest.c) main 函式依序執行 queue_init, init_cmd, console_init, ... -> main 執行 run_console
+   4. (console.c) run_console 會用 push_file 以 2. 當中的 trace 檔案創建一個 buffer ，存在全域的 buf_stack
+   5. (console.c) run_console 反覆呼叫 cmd_select 執行輸入的命令
+
+第一次執行 cmd_select 的時候，不會進到 #567-571 的 while loop ，而是先過 cmd_select 其餘部分來讀取 cmd 檔案，並在 #605 把 cmd 的 header 輸出畫面上。
+第二次以後的 cmd_select 則會消耗 cmd 檔案其餘的命令，直到 readline 回傳 NULL 為止。
+
+從前面的錯誤訊息， global buffer overflow 發生在 cmd_select #569 ，interpret_cmda 執行 do_option_cmd 時在 #368 試圖存取 ```plist->valp``` 出錯。
+add_param 會在 2. 中把預先定義好的 "malloc", "fail" 參數加進 param_list ， #366 的 while loop 就是在 param_list 裡面尋找該參數的值。
+
+### 除錯
+觀察到出錯的 trace-17 是唯一使用 simulation 這個參數的 trace ，懷疑是 simulation 參數加入的時候出了問題:
+
+```c
+add_param("simulation", (int *) &simulation, "Start/Stop simulation mode", NULL);
+```
+
+跟其他的參數比起來:
+
+console.c #104-105
+```c
+add_param("verbose", &verblevel, "Verbosity level", NULL);
+add_param("error", &err_limit, "Number of errors until exit", NULL);
+```
+
+qtest.c #101-105
+```c
+add_param("length", &string_length, "Maximum length of displayed string",
+            NULL);
+add_param("malloc", &fail_probability, "Malloc failure probability percent",
+            NULL);
+add_param("fail", &fail_limit,
+            "Number of times allow queue operations to return false", NULL);
+```
+
+simulation 設計一個把 bool pointer 轉型成 int pointer 的過程，
+我一時想不到怎麼驗證這個行為，參考了 [RinHizakura](https://hackmd.io/@RinHizakura/ByuY_q6AU#Address-Sanitizer)，
+把 pointer 後面 4 個 bytes 的內容 printf ，執行數次可以發現後三個 byte 的數值無法預期。
+
+```c
+#include <stdio.h>
+#include <stdbool.h>
+
+void print_bytes(void *ptr, int size)
+{
+    unsigned char *p = ptr;
+    int i;
+    for (i=0; i<size; i++) {
+        printf("%02hhX ", p[i]);
+    }
+    printf("\n");
+}
+
+int main()
+{
+    bool a = true;
+    bool *ptr_b = &a;
+    printf("&a: %p\n", ptr_b);
+    printf("*(&a): %d\n", *ptr_b);
+    print_bytes(ptr_b, sizeof(bool));
+
+    int *ptr_i = (int *) ptr_b;
+    printf("(int *) &a: %p\n", ptr_i);
+    printf("*(int *) &a: %d\n", *ptr_i);
+    print_bytes(ptr_i, sizeof(int));
+}
+```
+
+也跑了 [YLowy](https://hackmd.io/@YLowy/BJyYjFuEP) 驗證的做法。
+注意到 #106 的 echo 也有相同問題，處理這個 bug ，將 simulation 跟 echo 的型態都改成 int 可以解決 overflow 的問題。
+
+:::info
+我思考了一會兒如何兼顧 bool 跟 int 型態， 一種可能是 PELE 記錄下指標儲存內容的大小，在取值的時候要小心的解讀記憶體上的 bytes
+但這樣似乎沒有直接改 bool 型態乾淨，而且記憶體用量因為儲存一個 size_t 而變大。
+
+另一種可能是修改 add_param ，如果輸入的指標是 bool * ，則將進來的值先取出，轉成 int ，再取指標。
+這樣的問題是當 simulation (or echo) 的值從外部被人更改之後， PELE 儲存的值不會改變，造成不預期的行為。
+
+不知道有沒有其他更妥善的做法?
+:::
+
 
 ### TODO:
-- Valgrind 排除 qtest 實作的記憶體錯誤
 - Massif 視覺化
 - 研讀 Dudect
