@@ -4,7 +4,6 @@
 ### Reading List:
  - [Done] [bit-field](https://hackmd.io/@sysprog/c-bitfield?type=view)
  - [Done] [C Standard && Security](https://hackmd.io/@sysprog/c-std-security?type=view)
- - [Done] [C Standard && Security](https://hackmd.io/@sysprog/c-std-security?type=view)
  - [Done] [Constant time ReLU](https://hackmd.io/@sysprog/constant-time-relu)
  - [C Language](https://hackmd.io/@sysprog/c-prog/%2F%40sysprog%2Fc-programming)
     - [Done] [bitwise](https://hackmd.io/@sysprog/c-prog/%2F%40sysprog%2Fc-bitwise)
