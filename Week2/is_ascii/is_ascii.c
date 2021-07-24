@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 
@@ -41,9 +42,8 @@ bool is_ascii_array_cast(const char str[], size_t size)
         return false;
     int i = 0;
     while ((i + 8) <= size) {
-        uint64_t payload;
-        memcpy(&payload, str + i, 8);
-        if (payload & 0x8080808080808080)
+        uint64_t *payload = (uint64_t *) str;
+        if (*payload & 0x8080808080808080)
             return false;
         i += 8;
     }
@@ -54,3 +54,12 @@ bool is_ascii_array_cast(const char str[], size_t size)
     }
     return true;
 }
+
+void main()
+{
+    char sample[] = "123456789abcdef";
+    bool result;
+    result = is_ascii_array_memcpy(sample + 1, 15);
+    result = is_ascii_array_cast(sample + 1, 15);
+}
+
